@@ -1,0 +1,4 @@
+#!/bin/bash
+#[ $# -eq 0 ] && { echo "Usage: $0 domain"; exit 1; }
+script=`basename $0`
+qmail-run $script $@

@@ -1,0 +1,48 @@
+#!/bin/bash
+
+set -e
+
+SETUP_DIR="/app/setup"
+
+QMAIL_HOME="/var/qmail"
+VPOPMAIL_HOME="/home/vpopmail"
+
+appStart () {
+	#make sure perms are ok
+	chown -R vpopmail:vchkpw ${VPOPMAIL_HOME}/domains/
+
+	# start supervisord
+  	echo "Starting supervisord..."
+  	exec /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf
+}
+
+appHelp () {
+  echo "Available options:"
+  echo " app:start          - Starts the qmail server (default)"
+  echo " app:help           - Displays the help"
+  echo " [command]          - Execute the specified linux command eg. bash."
+}
+
+case "$1" in
+  app:start)
+    appStart
+    ;;
+  app:help)
+    appHelp
+    ;;
+  *)
+    if [ -x $1 ]; then
+      $1
+    else
+      prog=$(which $1)
+      if [ -n "${prog}" ] ; then
+        shift 1
+        $prog $@
+      else
+        appHelp
+      fi
+    fi
+    ;;
+esac
+
+exit 0
