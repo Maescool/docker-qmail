@@ -31,7 +31,7 @@ Current versions:
 
 # Installation
 
-Because of qmail's licence I'm not allowed to distribute their program.
+I'm not planning on maintaining an docker image, but I wanted to give this to the community.
 So you'll have to build it yourself, no worries, it's all automated
 
 ```bash
@@ -103,3 +103,10 @@ sudo docker-enter qmail
 ```
 
 For more information refer https://github.com/jpetazzo/nsenter
+
+# References
+
+http://www.qmail.org/netqmail/
+http://www.lifewithqmail.org/
+http://www.inter7.com/software/
+
