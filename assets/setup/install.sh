@@ -6,17 +6,21 @@ QMAIL_HOME="/var/qmail"
 QMAIL_LOG_DIR="/var/log/qmail"
 VPOPMAIL_HOME="/home/vpopmail"
 
-QMAIL_DOWNLOAD="http://www.qmail.org/netqmail-1.06.tar.gz"
-VPOPMAIL_DOWNLOAD="http://downloads.sourceforge.net/project/vpopmail/vpopmail-stable/5.4.33/vpopmail-5.4.33.tar.gz"
-AUTORESPOND_DOWNLOAD="http://qmail.ixip.net/download/autorespond-2.0.5.tar.gz"
-QMAILADMIN_DOWNLOAD="http://downloads.sourceforge.net/project/qmailadmin/qmailadmin-devel/qmailadmin-1.2.16.tar.gz"
-MAILDROP_DOWNLOAD="http://downloads.sourceforge.net/project/courier/maildrop/2.8.1/maildrop-2.8.1.tar.bz2"
+#QMAIL_DOWNLOAD="http://www.qmail.org/netqmail-1.06.tar.gz"
+#VPOPMAIL_DOWNLOAD="http://downloads.sourceforge.net/project/vpopmail/vpopmail-stable/5.4.33/vpopmail-5.4.33.tar.gz"
+#EZMLM_DOWNLOAD="https://github.com/bruceg/ezmlm-idx/archive/7.2.2.tar.gz"
+#AUTORESPOND_DOWNLOAD="http://qmail.ixip.net/download/autorespond-2.0.5.tar.gz"
+#AUTORESPOND_DOWNLOAD="https://github.com/roffe/autorespond-2.0.6/archive/master.zip"
+#QMAILADMIN_DOWNLOAD="http://downloads.sourceforge.net/project/qmailadmin/qmailadmin-devel/qmailadmin-1.2.16.tar.gz"
+#MAILDROP_DOWNLOAD="http://downloads.sourceforge.net/project/courier/maildrop/2.8.1/maildrop-2.8.1.tar.bz2"
 
 ## QMAIL INSTALL BASED ON LWQ ##
 cd /usr/src
-wget $QMAIL_DOWNLOAD -O netqmail-1.06.tar.gz
+#wget $QMAIL_DOWNLOAD -O netqmail-1.06.tar.gz
+#tar -zxf netqmail-1.06.tar.gz
+echo "Installing QMAIL"
+tar -zxf /app/setup/netqmail-1.06.tar.gz
 
-tar -zxf netqmail-1.06.tar.gz
 cd netqmail-1.06
 
 groupadd -g 161 nofiles
@@ -112,8 +116,9 @@ mkdir ${QMAIL_LOG_DIR}
 ## VPOPMAIL INSTALL ##
 cd /usr/src
 
-wget $VPOPMAIL_DOWNLOAD -O vpopmail-5.4.33.tar.gz
-tar -zxf vpopmail-5.4.33.tar.gz
+#wget $VPOPMAIL_DOWNLOAD -O vpopmail-5.4.33.tar.gz
+#tar -zxf vpopmail-5.4.33.tar.gz
+tar -zxf /app/setup/vpopmail-5.4.33.tar.gz
 cd vpopmail-5.4.33
 
 groupadd -g 89 vchkpw
@@ -128,32 +133,43 @@ ln -s /home/vpopmail /var/lib/vpopmail
 
 ## EZMLM
 cd /usr/src
-git clone https://github.com/bruceg/ezmlm-idx.git
-cd ezmlm-idx
-bash tools/makemake
+echo "installing ezmlm"
+#git clone https://github.com/bruceg/ezmlm-idx.git
+#wget ${EZMLM_DOWNLOAD} -O ezmlm-idx-7.2.2.tar.gz
+#tar -zxvf ezmlm-idx-7.2.2.tar.gz
+tar -zxvf /app/setup/ezmlm-idx-7.2.2.tar.gz
+#cd ezmlm-idx
+cd ezmlm-idx-7.2.2
+bash ./tools/makemake
 make clean
-make; make man
-make mysql
+make
+#make man
+#make mysql
 make install
 
 ## Autoresponder ##
 cd /usr/src
-wget ${AUTORESPOND_DOWNLOAD} -O autorespond-2.0.5.tar.gz
-tar -zxf autorespond-2.0.5.tar.gz
-cd autorespond-2.0.5
+echo "installing Autoresponder"
+#wget ${AUTORESPOND_DOWNLOAD} -O autorespond-2.0.6.tar.gz
+#tar -zxf autorespond-2.0.6.tar.gz
+tar -zvxf /app/setup/autorespond-2.0.6.tar.gz
+cd autorespond-2.0.6-master
 make && make install
 
 ## Qmailadmin ##
 cd /usr/src
-wget ${QMAILADMIN_DOWNLOAD} -O qmailadmin-1.2.16.tar.gz
-tar -zxf qmailadmin-1.2.16.tar.gz
+echo "installing QmailAdmin"
+#wget ${QMAILADMIN_DOWNLOAD} -O qmailadmin-1.2.16.tar.gz
+#tar -zxf qmailadmin-1.2.16.tar.gz
+tar -zxf /app/setup/qmailadmin-1.2.16.tar.gz
 cd qmailadmin-1.2.16
 
 ./configure --enable-htmldir=/usr/share/qmailadmin/html --enable-imagedir=/usr/share/qmailadmin/images --enable-cgibindir=/usr/lib/cgi-bin --enable-htmllibdir=/usr/share/qmailadmin --enable-imageurl=/images --enable-cgipath=/qmailadmin
 make
 make install-strip
+echo "Done installing QmailAdmin"
 
-
+echo "Setting supervisor configs"
 # make sure fcgi runs
 cat > /etc/supervisor/conf.d/fgci.conf <<EOF
 [program:fcgi]
@@ -179,13 +195,14 @@ autorestart=true
 stdout_logfile=/var/log/supervisor/%(program_name)s.log
 stderr_logfile=/var/log/supervisor/%(program_name)s.log
 EOF
-
+echo "Setting nginx config"
 rm -f /etc/nginx/sites-enabled/default
 cp /app/setup/config/nginx-qmailadmin.conf /etc/nginx/sites-enabled/qmailadmin.conf
 
 
 ## Dovecot
 cd /usr/src
+echo "Installing Dovecot"
 apt-get source dovecot
 apt-get -y build-dep dovecot
 cd dovecot-*

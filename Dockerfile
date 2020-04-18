@@ -1,9 +1,9 @@
-FROM ubuntu:14.04
+FROM ubuntu:18.04
 
-ENV DEBIAN_FRONTEND noninteractive 
+ENV DEBIAN_FRONTEND noninteractive
 
 #Make sure ubuntu is up-to-date and install necessary packages
-RUN apt-get update && apt-get -y upgrade && apt-get -y install build-essential supervisor logrotate locales ucspi-tcp wget groff-base daemontools git-core libmysqlclient-dev nginx fcgiwrap libbg1-dev ssl-cert
+RUN sed -i "s/\# deb-src/deb-src/g" /etc/apt/sources.list && apt-get update && apt-get -y upgrade && apt-get -y install build-essential supervisor logrotate locales ucspi-tcp wget groff-base daemontools git-core libmysqlclient-dev nginx fcgiwrap libbg-dev ssl-cert automake
 
 COPY assets/setup/ /app/setup/
 COPY assets/config/ /app/setup/config/

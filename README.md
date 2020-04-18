@@ -22,12 +22,12 @@ I recommend using postfix and redirect mails for qmail-based domains to this ser
 ## Version
 
 Current versions:
-- qmail: **1.0.6**
+- net qmail: **1.0.6** (originally for qmail.org)
 - vpopmail: **5.4.33**
-- ezmlm: github master version of https://github.com/bruceg/ezmlm-idx
-- autorespond: **2.0.5**
+- ezmlm: github 7.2.2 version of https://github.com/bruceg/ezmlm-idx
+- autorespond: **2.0.6**
 - qmailadmin: **1.2.16** using ubuntu nginx
-- dovecot: current ubuntu version custom rebuild: **2.2.9-1ubuntu2.1**
+- dovecot: current ubuntu version custom rebuild: **2.2.33.2-1ubuntu4.5**
 
 # Installation
 
@@ -105,8 +105,7 @@ sudo docker-enter qmail
 For more information refer https://github.com/jpetazzo/nsenter
 
 # References
-
-http://www.qmail.org/netqmail/
-http://www.lifewithqmail.org/
-http://www.inter7.com/software/
+  * http://www.qmail.org/netqmail/
+  * http://www.lifewithqmail.org/
+  * http://www.inter7.com/software/
 
